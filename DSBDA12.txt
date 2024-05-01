@@ -1,0 +1,54 @@
+mapper.py
+
+#!/usr/bin/env python3
+import sys
+# Mapper function
+for line in sys.stdin:
+    # Split the line into words
+    words = line.strip().split()
+    
+    # Extract log level
+    log_level = words[2][:-1]  # Removing the colon from log level
+    
+    # Emit key-value pairs
+    print(f"{log_level}\t1")
+
+
+reducer.py
+
+#!/usr/bin/env python3
+import sys
+# Initializations
+current_log_level = None
+count = 0
+
+# Reducer function
+for line in sys.stdin:
+    # Split the input line by tab
+    log_level, _ = line.strip().split('\t')
+
+    # Check if the current key is the same as the previous one
+    if current_log_level == log_level:
+        count += 1
+    else:
+        # If the key changes, emit the result for the previous key
+        if current_log_level:
+            print(f"{current_log_level}:\t{count}")
+
+        # Reset count and update current key
+        count = 1
+        current_log_level = log_level
+
+# Emit the result for the last key
+if current_log_level:
+    print(f"{current_log_level}:\t{count}")
+
+
+input.txt
+
+2024-04-20 12:34:56 INFO: System initialized
+2024-04-20 12:35:00 ERROR: Connection timed out
+2024-04-20 12:36:05 DEBUG: Processing request #12345
+2024-04-20 12:36:10 INFO: Request completed successfully
+2024-04-20 12:37:20 WARNING: Disk space low
+2024-04-20 12:38:00 INFO: System shutdown initiated

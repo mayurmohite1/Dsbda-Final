@@ -1,0 +1,97 @@
+mapper.py
+
+#!/usr/bin/env python3
+import sys
+
+# Define variables to hold sum and count for each weather parameter
+total_temperature = 0
+total_dew_point = 0
+total_wind_speed = 0
+count = 0
+
+# Process each line of input from STDIN
+for line in sys.stdin:
+    # Remove leading and trailing whitespace
+    line = line.strip()
+    # Split the line into fields
+    fields = line.split()
+    
+    # Extract weather data fields (assuming format is: temperature dew_point wind_speed)
+    if len(fields) == 3:
+        try:
+            temperature = float(fields[0])
+            dew_point = float(fields[1])
+            wind_speed = float(fields[2])
+            # Update total and count for each parameter
+            total_temperature += temperature
+            total_dew_point += dew_point
+            total_wind_speed += wind_speed
+            count += 1
+        except ValueError:
+            # Ignore lines with invalid data
+            continue
+
+# Check if count is zero before calculating averages
+if count > 0:
+    # Emit the sums and count for each parameter
+    print('temperature\t%s' % (total_temperature / count))
+    print('dew_point\t%s' % (total_dew_point / count))
+    print('wind_speed\t%s' % (total_wind_speed / count))
+else:
+    print("No valid weather data found. Please check your input file.")
+
+
+reducer.py
+
+#!/usr/bin/env python3
+import sys
+
+# Initialize variables to hold total sums
+total_temperature = 0
+total_dew_point = 0
+total_wind_speed = 0
+count = 0
+
+# Process each line of input from STDIN
+for line in sys.stdin:
+    # Remove leading and trailing whitespace
+    line = line.strip()
+    # Split the line into key and value
+    parts = line.split('\t')
+    if len(parts) != 2:
+        # Skip lines that do not have two parts (key and value)
+        continue
+    
+    key, value = parts
+    # Convert value to float and update totals
+    if key == 'temperature':
+        total_temperature += float(value)
+    elif key == 'dew_point':
+        total_dew_point += float(value)
+    elif key == 'wind_speed':
+        total_wind_speed += float(value)
+    count += 1
+
+# Check if count is zero before calculating averages
+if count > 0:
+    # Calculate averages
+    avg_temperature = total_temperature / count
+    avg_dew_point = total_dew_point / count
+    avg_wind_speed = total_wind_speed / count
+
+    # Emit the averages
+    print('Average temperature:\t%s' % avg_temperature)
+    print('Average dew point:\t%s' % avg_dew_point)
+    print('Average wind speed:\t%s' % avg_wind_speed)
+else:
+    print("No valid weather data found. Please check your input file.")
+
+
+input.txt
+
+32.5 20.3 10.2
+30.2 18.5 9.8
+28.9 19.1 11.5
+
+
+
